@@ -178,16 +178,26 @@ class SimpleFab @JvmOverloads constructor(
             if (visibility == View.VISIBLE) {
                 animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(200)
                     .withEndAction {
+                        // 1. Swap assets while hidden
                         setupLayeredDrawable(bgDrawable, iconDrawable)
+
+                        // 2. Make it visible FIRST so the user can watch it grow
+                        // visibility = View.VISIBLE
+
+                        // 3. Animate it back up
                         animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                            .withEndAction { visibility = View.INVISIBLE }
+                            .withEndAction(null) // Clear the action loop cleanly
                             .start()
                     }.start()
             }
             else {
+                // It's hidden/GONE, so update it instantly
                 setupLayeredDrawable(bgDrawable, iconDrawable)
+
+                // Bring it back smoothly
+                visibility = View.VISIBLE
                 animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                    .withEndAction { visibility = View.INVISIBLE }
+                    .withEndAction(null)
                     .start()
             }
         }
