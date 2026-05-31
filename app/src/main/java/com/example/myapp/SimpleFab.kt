@@ -178,17 +178,16 @@ class SimpleFab @JvmOverloads constructor(
             if (visibility == View.VISIBLE) {
                 animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(200)
                     .withEndAction {
-                        visibility = View.INVISIBLE
                         setupLayeredDrawable(bgDrawable, iconDrawable)
                         animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                            .withEndAction { View.VISIBLE }
+                            .withEndAction { visibility = View.INVISIBLE }
                             .start()
                     }.start()
             }
             else {
                 setupLayeredDrawable(bgDrawable, iconDrawable)
                 animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                    .withEndAction { View.VISIBLE }
+                    .withEndAction { visibility = View.INVISIBLE }
                     .start()
             }
         }
