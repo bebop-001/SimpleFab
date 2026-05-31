@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SimpleFab">
+        <attr name="bgSrc" format="reference" />
+        <attr name="iconSrc" format="reference" />
+    </declare-styleable>
+</resources>
+<!--
+    typedArray.getResourceId(R.styleable.SimpleFab:bgSrc, 0)
+    typedArray.getResourceId(R.styleable.SimpleFab_bgSrc, 0)
+    -->
+
