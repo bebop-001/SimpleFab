@@ -1,4 +1,3 @@
 <resources>
-    <string name="app_name">FabSample</string>
-    <string name="add">Add</string>
+    <string name="app_name">SimpleFab</string>
 </resources>
