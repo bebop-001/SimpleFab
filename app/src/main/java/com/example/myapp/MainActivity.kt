@@ -19,6 +19,7 @@
 package com.example.myapp
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.myapp.databinding.ActivityMainBinding
@@ -31,21 +32,38 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.simpleFab.setOnClickListener {
+        binding.simpleFab1.setOnClickListener {
             Toast.makeText(this, "simpleFab clicked", Toast.LENGTH_SHORT).show()
         }
-        binding.showButton.setOnClickListener{
-            binding.simpleFab.show()
+        binding.showButton1.setOnClickListener{
+            binding.simpleFab1.visibility = View.VISIBLE
         }
-        binding.hideButton.setOnClickListener{
-            binding.simpleFab.hide()
+        binding.hideButton1.setOnClickListener{
+            binding.simpleFab1.visibility = View.INVISIBLE
         }
-        var i = 1
-        binding.changeButton.setOnClickListener{
-            if (i++ and 1 == 1)
-                binding.simpleFab.setLayeredAssets(R.drawable.fab_orange_background, R.drawable.ic_add_24)
-            else
-                binding.simpleFab.setLayeredAssets(R.drawable.fab_purple_background, R.drawable.ic_add_24)
+        savedInstanceState?.let {
+            val visibility = savedInstanceState.getInt("VISIBILITY_1")
+            binding.simpleFab1.visibility = visibility
         }
+
+        binding.simpleFab2.setOnClickListener {
+            Toast.makeText(this, "simpleFab clicked", Toast.LENGTH_SHORT).show()
+        }
+        binding.showButton2.setOnClickListener{
+            binding.simpleFab2.visibility = View.VISIBLE
+        }
+        binding.hideButton2.setOnClickListener{
+            binding.simpleFab2.visibility = View.INVISIBLE
+        }
+        savedInstanceState?.let {
+            val visibility = savedInstanceState.getInt("VISIBILITY_2")
+            binding.simpleFab2.visibility = visibility
+        }
+    }
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        // Save whether the view is currently visible
+        outState.putInt("VISIBILITY_1", binding.simpleFab1.visibility)
+        outState.putInt("VISIBILITY_2", binding.simpleFab2.visibility)
     }
 }

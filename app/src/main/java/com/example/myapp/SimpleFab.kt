@@ -19,15 +19,11 @@
 package com.example.myapp
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.util.AttributeSet
-import android.view.View
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
-
-
 
 class SimpleFab @JvmOverloads constructor(
     context: Context,
@@ -35,52 +31,17 @@ class SimpleFab @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : AppCompatImageView(context, attrs, defStyleAttr) {
 
-    private val userPrefs: SharedPreferences = context.getSharedPreferences(
-        "SimpleFabPrefs", Context.MODE_PRIVATE)
-    private val regex = """\((\d+),\s*(\d+)\)""".toRegex()
-
-    fun String.toPair(): Pair<Int,Int> {
-        val rv = regex.find(this)?.destructured?.let { (first, second) ->
-            Pair(first.toInt(), second.toInt())
-        }
-        if(rv == null)
-            throw Exception (
-            "String.toPair: !ad string to pair conversion for \'4this\""
-            )
-        return rv
-    }
-
-    fun getIntPair(name: String, default: Pair<Int,Int>?): Pair<Int, Int>? {
-        var rv: Pair<Int, Int>? = default
-        val value = userPrefs.getString("$name.IntPair", default?.toString())
-        if (value != null) {
-            rv = value.toPair()
-        }
-        return rv
-    }
-    fun putIntPair(name: String, pair: Pair<Int, Int>?) {
-        val s: String? = pair?.toString()
-        userPrefs.edit().putString("$name.IntPair", s).apply()
-    }
-
     init {
         if (attrs != null) {
             val typedArray = context.obtainStyledAttributes(attrs, R.styleable.SimpleFab)
 
             // Read the drawables from the XML attributes
-            val _bgResId = typedArray.getResourceId(R.styleable.SimpleFab_bgSrc, 0)
-            val _iconResId = typedArray.getResourceId(R.styleable.SimpleFab_iconSrc, 0)
-            // if the value wasn't set, set it.
-            if (getIntPair("resId", null) == null) {
-                putIntPair("resId", Pair(_bgResId, _iconResId))
-            }
-            // if this returns 0,0 (which shouln't happen) we fail below
-            val (bgResId, iconResId) = getIntPair("resId", Pair(0,0))!!
+            val bgResId = typedArray.getResourceId(R.styleable.SimpleFab_bgSrc, 0)
+            val iconResId = typedArray.getResourceId(R.styleable.SimpleFab_iconSrc, 0)
 
             require (bgResId != 0 && iconResId != 0) {
-                "SimpleFab: bgResId and iconResid must be set."
+                "SimpleFab: bgResId and iconResId must be set."
             }
-            putIntPair("resId", Pair(bgResId, iconResId))
 
             val bgDrawable = ContextCompat.getDrawable(context, bgResId)
             val iconDrawable = ContextCompat.getDrawable(context, iconResId)
@@ -109,59 +70,5 @@ class SimpleFab @JvmOverloads constructor(
 
         // Ensure it centers properly
         scaleType = ScaleType.CENTER_INSIDE
-    }
-    fun hide() {
-        animate()
-            .alpha(0f)
-            .scaleX(0f)
-            .scaleY(0f)
-            .setDuration(200)
-            .withEndAction { visibility = View.GONE }
-            .start()
-    }
-
-    fun show() {
-        visibility = View.VISIBLE
-        animate()
-            .alpha(1f)
-            .scaleX(1f)
-            .scaleY(1f)
-            .setDuration(200)
-            .withEndAction(null)
-            .start()
-    }
-
-    fun setLayeredAssets(bgResId: Int, iconResId: Int) {
-        // save the new res ids.
-        putIntPair("resId", Pair(bgResId, iconResId))
-        val bgDrawable = ContextCompat.getDrawable(context, bgResId)
-        val iconDrawable = ContextCompat.getDrawable(context, iconResId)
-        if (bgDrawable != null && iconDrawable != null) {
-            if (visibility == View.VISIBLE) {
-                animate().alpha(0f).scaleX(0f).scaleY(0f).setDuration(200)
-                    .withEndAction {
-                        // 1. Swap assets while hidden
-                        setupLayeredDrawable(bgDrawable, iconDrawable)
-
-                        // 2. Make it visible FIRST so the user can watch it grow
-                        // visibility = View.VISIBLE
-
-                        // 3. Animate it back up
-                        animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                            .withEndAction(null) // Clear the action loop cleanly
-                            .start()
-                    }.start()
-            }
-            else {
-                // It's hidden/GONE, so update it instantly
-                setupLayeredDrawable(bgDrawable, iconDrawable)
-
-                // Bring it back smoothly
-                visibility = View.VISIBLE
-                animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200)
-                    .withEndAction(null)
-                    .start()
-            }
-        }
     }
 }
