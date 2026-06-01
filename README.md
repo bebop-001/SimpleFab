@@ -15,10 +15,7 @@ Since I couldn't find a lightweight fit, I rolled my own. SimpleFab is the resul
 
 > **Note:** For production or more complex architectures, this state logic is best handled inside a `ViewModel`. It is implemented here in the Activity strictly for self-contained demo simplicity.
 
-<p align="center">
-  <video src="https://github.com/bebop-001/SimpleFab.git/art/use.mp4"
-    width="320" autoplay loop muted playsinline></video>
-</p>
+![Screenshot](art/Screenshot.png) 
 
 ## License
 
